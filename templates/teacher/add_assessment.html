@@ -1,0 +1,154 @@
+{% extends "base.html" %}
+
+{% block title %}Add New Assessment{% endblock %}
+
+{% block content %}
+<div class="container mx-auto p-8 bg-white rounded-2xl shadow-xl border border-gray-100 max-w-2xl">
+    <h1 class="text-4xl font-bold text-gray-800 mb-8 text-center">Add New Assessment</h1>
+
+    <div class="mb-6">
+        <a href="{{ url_for('teacher_assessments') }}" class="inline-block align-baseline font-bold text-sm text-blue-500 hover:text-blue-800">
+            Back to My Assessments
+        </a>
+    </div>
+
+    <form action="{{ url_for('teacher_add_assessment') }}" method="POST" class="space-y-6">
+        <div>
+            <label for="title" class="block text-gray-700 text-sm font-semibold mb-2">Assessment Title:</label>
+            <input
+                type="text" id="title" name="title" required
+                value="{{ request.form.title or '' }}"
+                class="form-input"
+            >
+        </div>
+
+        <div>
+            <label for="description" class="block text-gray-700 text-sm font-semibold mb-2">Description (Optional):</label>
+            <textarea
+                id="description" name="description" rows="4"
+                placeholder="e.g., A research essay on topic X."
+                class="form-input"
+            >{{ request.form.description or '' }}</textarea>
+        </div>
+
+        <div>
+            <label for="course_select" class="block text-gray-700 text-sm font-semibold mb-2">Select Course:</label>
+            <select
+                id="course_select" name="course_id" required
+                onchange="filterUnits()"
+                class="form-input"
+            >
+                <option value="">-- Select a Course --</option>
+                {% for course in teacher_courses %}
+                    <option value="{{ course.id }}" {% if course.id|string == (request.form.course_id or '') %}selected{% endif %}>{{ course.name }} ({{ course.code }})</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div>
+            <label for="course_unit_id" class="block text-gray-700 text-sm font-semibold mb-2">Select Unit:</label>
+            <select
+                id="course_unit_id" name="course_unit_id" required disabled
+                class="form-input"
+            >
+                <option value="">-- Select a Unit --</option>
+            </select>
+        </div>
+
+        <div>
+            <label for="due_date" class="block text-gray-700 text-sm font-semibold mb-2">Due Date:</label>
+            <input
+                type="date" id="due_date" name="due_date" required
+                value="{{ request.form.due_date or '' }}"
+                class="form-input"
+            >
+        </div>
+
+        <div>
+            <label for="max_points" class="block text-gray-700 text-sm font-semibold mb-2">Maximum Points:</label>
+            <input
+                type="number" id="max_points" name="max_points" min="1" required
+                value="{{ request.form.max_points or '' }}"
+                class="form-input"
+            >
+        </div>
+
+        <div class="flex items-center justify-between">
+            <button type="submit" class="btn-primary py-3 px-6 text-lg rounded-md">
+                Add Assessment
+            </button>
+        </div>
+    </form>
+</div>
+
+<script>
+    const courseUnitsByCourse = {{ course_units_by_course | tojson }};
+    const courseSelect = document.getElementById('course_select');
+    const courseUnitSelect = document.getElementById('course_unit_id');
+    const previouslySelectedUnit = "{{ request.form.course_unit_id or '' }}";
+
+    function filterUnits() {
+        const selectedCourseId = courseSelect.value;
+        courseUnitSelect.innerHTML = '<option value="">-- Select a Unit --</option>'; // Clear options
+
+        if (selectedCourseId && courseUnitsByCourse[selectedCourseId]) {
+            courseUnitSelect.disabled = false;
+            courseUnitsByCourse[selectedCourseId].forEach(unit => {
+                const option = document.createElement('option');
+                option.value = unit.unit_id;
+                option.textContent = `${unit.unit_code}: ${unit.unit_title}`;
+
+                if (option.value === previouslySelectedUnit) {
+                    option.selected = true;
+                }
+                courseUnitSelect.appendChild(option);
+            });
+        } else {
+            courseUnitSelect.disabled = true;
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        filterUnits();
+    });
+</script>
+
+<style>
+/* Tailwind-inspired form input style */
+.form-input {
+    width: 100%;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid #d1d5db; /* gray-300 */
+    border-radius: 0.375rem; /* rounded-md */
+    font-size: 1rem;
+    line-height: 1.5rem;
+    color: #374151; /* gray-700 */
+    outline: none;
+    transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+.form-input:focus {
+    border-color: #3b82f6; /* blue-500 */
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3); /* blue ring */
+}
+
+/* Primary button style */
+.btn-primary {
+    background-color: #3b82f6; /* blue-500 */
+    color: white;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.2s ease-in-out;
+}
+
+.btn-primary:hover {
+    background-color: #2563eb; /* blue-600 */
+}
+
+.btn-primary:focus {
+    outline: 2px solid #2563eb;
+    outline-offset: 2px;
+}
+</style>
+{% endblock %}

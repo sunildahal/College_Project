@@ -1,0 +1,183 @@
+{% extends "base.html" %}
+
+{% block title %}Student Dashboard{% endblock %}
+
+{% block content %}
+<div class="container mx-auto p-8 bg-white rounded-2xl shadow-xl border border-gray-100">
+    <h1 class="text-5xl font-extrabold text-gray-900 mb-10 text-center tracking-tight">Welcome, {{ student_info.first_name }} {{ student_info.last_name }}!</h1>
+
+    {# Key Metrics Cards #}
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
+        {# My Program Card #}
+        <div class="card bg-gradient-to-br from-blue-50 to-blue-100 border-l-4 border-blue-500 text-blue-900 flex flex-col justify-between p-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
+            <div class="flex items-center mb-4">
+                <span class="text-4xl text-blue-600 mr-3">🎓</span>
+                <h2 class="text-2xl font-semibold text-blue-800">My Program</h2>
+            </div>
+            <p class="text-3xl font-bold text-blue-700 mb-4">
+                {% if student_info and student_info.program_name %}
+                    {{ student_info.program_name }}
+                {% else %}
+                    Not assigned.
+                {% endif %}
+            </p>
+            {% if student_info and student_info.program_id %}
+            <a href="{{ url_for('student_dashboard') }}" class="btn-secondary text-base px-4 py-2 opacity-75 cursor-not-allowed">
+                View Details (Future)
+            </a>
+            {% endif %}
+        </div>
+
+        {# My Courses Card #}
+        <div class="card bg-gradient-to-br from-green-50 to-green-100 border-l-4 border-green-500 text-green-900 flex flex-col justify-between p-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
+            <div class="flex items-center mb-4">
+                <span class="text-4xl text-green-600 mr-3">📚</span>
+                <h2 class="text-2xl font-semibold text-green-800">My Courses</h2>
+            </div>
+            <p class="text-3xl font-bold text-green-700 mb-4">{{ enrolled_courses|length }}</p>
+            <p class="text-green-800 text-lg mb-4">course{{ 's' if enrolled_courses|length != 1 }} enrolled.</p>
+            <a href="{{ url_for('student_courses') }}" class="btn-primary text-base px-4 py-2 bg-green-600 hover:bg-green-700">
+                View All Courses
+            </a>
+        </div>
+
+        {# My Grades Card #}
+        <div class="card bg-gradient-to-br from-yellow-50 to-yellow-100 border-l-4 border-yellow-500 text-yellow-900 flex flex-col justify-between p-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
+            <div class="flex items-center mb-4">
+                <span class="text-4xl text-yellow-600 mr-3">📊</span>
+                <h2 class="text-2xl font-semibold text-yellow-800">My Grades</h2>
+            </div>
+            <p class="text-3xl font-bold text-yellow-700 mb-4">{{ grades|length }}</p>
+            <p class="text-yellow-800 text-lg mb-4">graded assessment{{ 's' if grades|length != 1 }}.</p>
+            <a href="{{ url_for('student_grades_transcript') }}" class="btn-primary text-base px-4 py-2 bg-yellow-600 hover:bg-yellow-700">
+                View All Grades
+            </a>
+        </div>
+    </div>
+
+    {# Upcoming Assessments Section #}
+    <h2 class="text-3xl font-bold text-gray-800 mb-6 border-b-2 border-gray-200 pb-3">Upcoming Assessments</h2>
+    {% if upcoming_assessments %}
+    <div class="overflow-x-auto mb-12 card p-6 bg-gray-50 border-gray-200 rounded-xl">
+        <table class="min-w-full">
+            <thead>
+                <tr>
+                    <th>Assessment</th>
+                    <th>Course (Unit)</th>
+                    <th>Due Date</th>
+                    <th>Max Points</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for assessment in upcoming_assessments %}
+                <tr class="hover:bg-gray-100">
+                    <td>{{ assessment.title }}</td>
+                    <td>{{ assessment.course_name }} ({{ assessment.unit_code }}: {{ assessment.unit_title }})</td>
+                    <td class="font-medium text-gray-800">{{ assessment.due_date.strftime('%Y-%m-%d') }}</td>
+                    <td>{{ assessment.max_points }}</td>
+                    <td><span class="px-3 py-1 rounded-full text-xs font-semibold
+                        {% if assessment.submission_status == 'Not Submitted' %}bg-red-100 text-red-800
+                        {% elif assessment.submission_status == 'Submitted' %}bg-blue-100 text-blue-800
+                        {% endif %}">
+                        {{ assessment.submission_status }}
+                    </span></td>
+                    <td>
+                        <a href="{{ url_for('student_view_assessment', assessment_id=assessment.id) }}" class="text-blue-600 hover:text-blue-800 font-medium">View/Submit</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <p class="text-gray-600 text-center py-8 mb-12 text-lg card bg-gray-50 border-gray-200 rounded-xl">No upcoming assessments found. Time to relax! 😌</p>
+    {% endif %}
+
+    {# Recent Grades Section #}
+    <h2 class="text-3xl font-bold text-gray-800 mb-6 border-b-2 border-gray-200 pb-3">Recent Grades</h2>
+    {% if grades %}
+    <div class="overflow-x-auto mb-12 card p-6 bg-gray-50 border-gray-200 rounded-xl">
+        <table class="min-w-full">
+            <thead>
+                <tr>
+                    <th>Assessment</th>
+                    <th>Course (Unit)</th>
+                    <th>Grade</th>
+                    <th>Max Points</th>
+                    <th>Percentage</th>
+                    <th>Graded Date</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for grade in grades %}
+                <tr class="hover:bg-gray-100">
+                    <td>{{ grade.assessment_title }}</td>
+                    <td>{{ grade.course_name }} ({{ grade.unit_code }}: {{ grade.unit_title }})</td>
+                    <td class="font-bold text-green-700 text-lg">{{ grade.grade }}</td>
+                    <td>{{ grade.max_points }}</td>
+                    <td>
+                        {% if grade.max_points > 0 %}
+                            <span class="font-semibold text-gray-800">{{ "%.2f" | format((grade.grade / grade.max_points) * 100) }}%</span>
+                        {% else %}
+                            N/A
+                        {% endif %}
+                    </td>
+                    <td class="font-medium text-gray-800">{{ grade.graded_date.strftime('%Y-%m-%d') }}</td>
+                    <td>
+                        <a href="{{ url_for('student_view_assessment', assessment_id=grade.assessment_id) }}" class="text-blue-600 hover:text-blue-800 font-medium">View Feedback</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <p class="text-gray-600 text-center py-8 mb-12 text-lg card bg-gray-50 border-gray-200 rounded-xl">No recent grades found. Keep up the great work! 💪</p>
+    {% endif %}
+
+    {# My Feedback History Section #}
+    <h2 class="text-3xl font-bold text-gray-800 mb-6 border-b-2 border-gray-200 pb-3">My Feedback History</h2>
+    {% if feedback_history %}
+    <div class="overflow-x-auto card p-6 bg-gray-50 border-gray-200 rounded-xl">
+        <table class="min-w-full">
+            <thead>
+                <tr>
+                    <th>Feedback Date</th>
+                    <th>Course</th>
+                    <th>Teacher</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for feedback in feedback_history %}
+                <tr class="hover:bg-gray-100">
+                    <td class="font-medium text-gray-800">{{ feedback.feedback_date.strftime('%Y-%m-%d') }}</td>
+                    <td>
+                        {% if feedback.course_name %}{{ feedback.course_name }}{% else %}General{% endif %}
+                    </td>
+                    <td>
+                        {% if feedback.teacher_first_name %}{{ feedback.teacher_first_name }} {{ feedback.teacher_last_name }}{% else %}N/A{% endif %}
+                    </td>
+                    <td><span class="px-3 py-1 rounded-full text-xs font-semibold
+                        {% if feedback.status == 'Replied' %}bg-green-100 text-green-800
+                        {% elif feedback.status == 'New' %}bg-purple-100 text-purple-800
+                        {% endif %}">
+                        {{ feedback.status }}
+                    </span></td>
+                    <td>
+                        <a href="{{ url_for('student_view_feedback', feedback_id=feedback.id) }}" class="text-blue-600 hover:text-blue-800 font-medium">View</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <p class="text-gray-600 text-center py-8 text-lg card bg-gray-50 border-gray-200 rounded-xl">No feedback history found. Feel free to submit new feedback! 💡</p>
+    {% endif %}
+</div>
+{% endblock %}

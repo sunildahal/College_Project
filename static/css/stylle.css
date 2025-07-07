@@ -1,0 +1,230 @@
+body {
+    font-family: 'Inter', sans-serif; /* Using Inter as per instructions */
+    margin: 0;
+    padding: 0;
+    background-color: #f0f2f5; /* Light grey background */
+    color: #333;
+    line-height: 1.6;
+}
+
+header {
+    background-color: #2c3e50; /* Dark blue-grey */
+    color: white;
+    padding: 1.2em 0;
+    text-align: center;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+nav a {
+    color: white;
+    margin: 0 20px;
+    text-decoration: none;
+    font-weight: bold;
+    transition: color 0.3s ease;
+}
+
+nav a:hover {
+    color: #3498db; /* Blue on hover */
+}
+
+main {
+    padding: 30px;
+    max-width: 1000px; /* Increased max-width */
+    margin: 30px auto;
+    background-color: white;
+    border-radius: 12px; /* More rounded corners */
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+footer {
+    text-align: center;
+    padding: 1.5em 0;
+    background-color: #2c3e50;
+    color: #ecf0f1; /* Light grey for footer text */
+    margin-top: 40px;
+}
+
+h1, h2, h3 {
+    color: #2c3e50;
+    margin-bottom: 20px;
+}
+
+.flashes {
+    list-style-type: none;
+    padding: 0;
+    margin-bottom: 25px;
+}
+
+.alert {
+    padding: 15px;
+    margin-bottom: 15px;
+    border-radius: 8px;
+    font-weight: bold;
+}
+
+.alert-success {
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+.alert-danger {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}
+
+.alert-info {
+    background-color: #d1ecf1;
+    color: #0c5460;
+    border: 1px solid #bee5eb;
+}
+
+/* Form styling */
+form label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+    color: #555;
+}
+
+form input[type="text"],
+form input[type="email"],
+form input[type="password"],
+form select,
+form textarea {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 18px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    box-sizing: border-box; /* Ensures padding doesn't add to total width */
+    font-size: 1em;
+}
+
+form button {
+    background-color: #3498db; /* Blue button */
+    color: white;
+    padding: 12px 25px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 1.1em;
+    transition: background-color 0.3s ease;
+}
+
+form button:hover {
+    background-color: #2980b9; /* Darker blue on hover */
+}
+
+/* General button style */
+.button {
+    display: inline-block;
+    background-color: #3498db;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    text-decoration: none;
+    margin-bottom: 20px;
+    transition: background-color 0.3s ease;
+}
+
+.button:hover {
+    background-color: #2980b9;
+}
+
+/* Table styling */
+.user-table, .data-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 25px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    border-radius: 8px;
+    overflow: hidden; /* Ensures rounded corners apply to table content */
+}
+
+.user-table th, .user-table td,
+.data-table th, .data-table td {
+    border: 1px solid #e0e0e0;
+    padding: 12px;
+    text-align: left;
+}
+
+.user-table th, .data-table th {
+    background-color: #ecf0f1; /* Light grey header */
+    font-weight: bold;
+    color: #555;
+}
+
+.user-table tr:nth-child(even), .data-table tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+.user-table tr:hover, .data-table tr:hover {
+    background-color: #eef;
+}
+
+/* Action links within tables */
+.action-link {
+    color: #3498db;
+    text-decoration: none;
+    margin-right: 10px;
+    transition: color 0.3s ease;
+}
+
+.action-link:hover {
+    color: #2980b9;
+    text-decoration: underline;
+}
+
+.delete-button {
+    background: none;
+    border: none;
+    color: #e74c3c; /* Red color for delete */
+    cursor: pointer;
+    padding: 0;
+    font-size: inherit;
+    font-family: inherit;
+    transition: color 0.3s ease;
+}
+
+.delete-button:hover {
+    color: #c0392b;
+    text-decoration: underline;
+}
+
+/* For the conditional fields in add/edit user forms */
+#studentFields, #teacherFields {
+    border: 1px solid #e0e0e0;
+    padding: 20px;
+    margin-top: 25px;
+    border-radius: 8px;
+    background-color: #fcfcfc;
+}
+
+#studentFields h3, #teacherFields h3 {
+    margin-top: 0;
+    color: #444;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 10px;
+    margin-bottom: 15px;
+}
+
+/* static/css/style.css */
+
+/* You can remove most of the previous CSS and rely on Tailwind. */
+/* Keep only if you need very specific, non-Tailwindable overrides. */
+
+/* Example: If you need a very specific button effect not easily done with Tailwind */
+/* .my-custom-button {
+    background-image: linear-gradient(to right, #FF8008 0%, #FFC837 51%, #FF8008 100%);
+    text-align: center;
+    transition: 0.5s;
+    background-size: 200% auto;
+    color: white;
+    box-shadow: 0 0 20px #eee;
+    border-radius: 10px;
+    display: block;
+} */

@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+
+{% block title %}2FA Verification{% endblock %}
+
+{% block content %}
+<style>
+    .fade-in {
+        animation: fadeInUp 0.8s ease-out;
+    }
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+</style>
+
+<div class="flex items-center justify-center min-h-[calc(100vh-160px)] px-4 bg-gradient-to-br from-indigo-100 to-blue-100">
+    <div class="w-full max-w-md bg-white p-10 rounded-2xl shadow-xl border border-gray-200 fade-in">
+        <div class="text-center mb-6">
+            <div class="text-indigo-600 text-6xl mb-3 animate-pulse">🔐</div>
+            <h1 class="text-3xl font-extrabold text-gray-800">2FA Verification</h1>
+            <p class="text-gray-600 mt-2 text-base">Secure your login with the temporary authentication code.</p>
+        </div>
+
+        <div class="bg-indigo-50 border border-indigo-200 text-indigo-700 font-semibold text-xl rounded-lg p-4 text-center mb-4">
+            Your Code: {{ generated_code }}
+        </div>
+
+        <div class="text-center text-gray-500 text-sm mb-6">
+            This code is valid briefly.<br>
+            You have <strong>{{ remaining_attempts }}</strong> attempt{{ 's' if remaining_attempts != 1 }} remaining.
+        </div>
+
+        <form action="{{ url_for('twofa_verify') }}" method="POST" class="space-y-5">
+            <div>
+                <label for="otp_code" class="block text-gray-700 text-sm font-medium mb-2">Enter 2FA Code:</label>
+                <input id="otp_code" name="otp_code" type="text" required maxlength="6" pattern="\d{6}"
+                    placeholder="123456"
+                    class="w-full text-center text-xl px-5 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none transition duration-150 ease-in-out">
+            </div>
+
+            <button type="submit"
+                class="w-full py-3 text-lg font-semibold text-white bg-gradient-to-r from-indigo-500 to-blue-600 hover:from-indigo-600 hover:to-blue-700 rounded-xl shadow-md transition-all duration-300 hover:shadow-xl">
+                Verify Code
+            </button>
+        </form>
+
+        <p class="text-center text-gray-500 text-sm mt-6">
+            If you did not request this login, you may safely ignore this prompt.
+        </p>
+    </div>
+</div>
+{% endblock %}

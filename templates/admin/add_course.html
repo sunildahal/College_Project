@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+
+{% block title %}Add New Course{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-6 py-10 bg-white rounded-3xl shadow-2xl max-w-2xl">
+    <h1 class="text-4xl font-extrabold text-gray-900 mb-10 text-center">Add New Course</h1>
+
+    <div class="mb-6 text-center">
+        <a href="{{ url_for('admin_courses') }}"
+           class="text-blue-600 hover:text-blue-800 font-semibold underline transition duration-150">
+            ⬅ Back to Course Management
+        </a>
+    </div>
+
+    <form action="{{ url_for('admin_add_course') }}" method="POST" class="space-y-6">
+        <div>
+            <label for="name" class="block text-sm font-semibold text-gray-700 mb-2">Course Name<span class="text-red-500">*</span>:</label>
+            <input type="text" id="name" name="name" class="form-input w-full rounded-lg border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200" placeholder="e.g., Introduction to Data Science" required>
+        </div>
+
+        <div>
+            <label for="code" class="block text-sm font-semibold text-gray-700 mb-2">Course Code<span class="text-red-500">*</span>:</label>
+            <input type="text" id="code" name="code" class="form-input w-full rounded-lg border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200" placeholder="e.g., CSCI101" required>
+        </div>
+
+        <div>
+            <label for="description" class="block text-sm font-semibold text-gray-700 mb-2">Description (Optional):</label>
+            <textarea id="description" name="description" rows="4"
+                      class="form-input w-full rounded-lg border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200"
+                      placeholder="e.g., An introductory course to programming principles."></textarea>
+        </div>
+
+        <div>
+            <label for="program_id" class="block text-sm font-semibold text-gray-700 mb-2">Assigned Program (Optional):</label>
+            <select id="program_id" name="program_id" class="form-input w-full rounded-lg border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200">
+                <option value="">No Program</option>
+                {% for program in programs %}
+                    <option value="{{ program.id }}">{{ program.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div>
+            <label for="teacher_id" class="block text-sm font-semibold text-gray-700 mb-2">Course Coordinator (Optional):</label>
+            <select id="teacher_id" name="teacher_id" class="form-input w-full rounded-lg border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200">
+                <option value="">No Coordinator</option>
+                {% for teacher in teachers %}
+                    <option value="{{ teacher.id }}">{{ teacher.first_name }} {{ teacher.last_name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="text-center">
+            <button type="submit"
+                    class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 px-8 rounded-lg text-lg transition duration-200">
+                ➕ Add Course
+            </button>
+        </div>
+    </form>
+</div>
+{% endblock %}

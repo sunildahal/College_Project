@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+
+{% block title %}Course Details: {{ course_details.name }}{% endblock %}
+
+{% block content %}
+<div class="container mx-auto p-6 bg-white rounded-lg shadow-md">
+    <h1 class="text-3xl font-bold text-gray-800 mb-6">Course Details: {{ course_details.name }} ({{ course_details.code }})</h1>
+
+    <div class="mb-4">
+        <p class="text-gray-700"><strong class="font-semibold">Description:</strong> {{ course_details.description if course_details.description else 'No description provided.' }}</p>
+        <p class="text-gray-700"><strong class="font-semibold">Program:</strong> {{ course_details.program_name if course_details.program_name else 'N/A' }}</p>
+        <p class="text-gray-700"><strong class="font-semibold">Course Coordinator:</strong>
+            {% if course_details.teacher_first_name and course_details.teacher_last_name %}
+                {{ course_details.teacher_first_name }} {{ course_details.teacher_last_name }}
+            {% else %}
+                N/A
+            {% endif %}
+        </p>
+    </div>
+
+    <h2 class="text-2xl font-bold text-gray-800 mt-8 mb-4">Course Units</h2>
+
+    {% if grouped_units %}
+        {% for semester in ordered_semesters %}
+            <h3 class="text-xl font-semibold text-gray-700 mt-6 mb-3">{{ semester }}</h3>
+            <div class="overflow-x-auto mb-4">
+                <table class="min-w-full bg-white border border-gray-200 rounded-lg">
+                    <thead class="bg-gray-100">
+                        <tr>
+                            <th class="py-3 px-4 text-left text-sm font-semibold text-gray-600">Unit Code</th>
+                            <th class="py-3 px-4 text-left text-sm font-semibold text-gray-600">Unit Title</th>
+                            <th class="py-3 px-4 text-left text-sm font-semibold text-gray-600">Credit Points</th>
+                            <th class="py-3 px-4 text-left text-sm font-semibold text-gray-600">Assigned Teacher</th>
+                            <th class="py-3 px-4 text-left text-sm font-semibold text-gray-600">Prerequisites</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for unit in grouped_units[semester] %}
+                        <tr class="border-b border-gray-200 hover:bg-gray-50">
+                            <td class="py-3 px-4 text-sm text-gray-700">{{ unit.unit_code }}</td>
+                            <td class="py-3 px-4 text-sm text-gray-700">{{ unit.unit_title }}</td>
+                            <td class="py-3 px-4 text-sm text-gray-700">{{ unit.credit_points }}</td>
+                            <td class="py-3 px-4 text-sm text-gray-700">
+                                {% if unit.teacher_first_name and unit.teacher_last_name %}
+                                    {{ unit.teacher_first_name }} {{ unit.teacher_last_name }}
+                                {% else %}
+                                    N/A
+                                {% endif %}
+                            </td>
+                            <td class="py-3 px-4 text-sm text-gray-700">{{ unit.prerequisites if unit.prerequisites else 'None' }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% endfor %}
+    {% else %}
+        <p class="text-gray-600 text-center py-4">No units found for this course.</p>
+    {% endif %}
+
+    <div class="mt-6">
+        <a href="{{ url_for('student_dashboard') }}" class="inline-block align-baseline font-bold text-sm text-blue-500 hover:text-blue-800">
+            Back to Dashboard
+        </a>
+    </div>
+</div>
+{% endblock %}

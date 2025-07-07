@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+
+{% block title %}Welcome to Student Support System{% endblock %}
+
+{% block content %}
+<div class="text-center py-16 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-blue-500 to-indigo-600 text-white rounded-xl shadow-lg mb-10">
+    <h1 class="text-5xl md:text-6xl font-extrabold leading-tight mb-4 animate-fade-in-down">
+        Your Journey to Academic Success Starts Here
+    </h1>
+    <p class="text-xl md:text-2xl opacity-90 mb-8 animate-fade-in-up">
+        Empowering students with seamless access to courses, grades, and essential support services.
+    </p>
+    <div class="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-6 animate-fade-in-up">
+        <a href="{{ url_for('login') }}" class="btn-primary py-3 px-8 text-xl">
+            Login to Your Account
+        </a>
+        <a href="{{ url_for('courses_catalog') }}" class="btn-secondary py-3 px-8 text-xl bg-white text-blue-600 hover:bg-gray-100">
+            Explore Courses
+        </a>
+    </div>
+</div>
+
+<section class="py-12 bg-white rounded-xl shadow-md mb-10">
+    <div class="container mx-auto px-4">
+        <h2 class="text-4xl font-bold text-gray-800 text-center mb-10">Key Features</h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div class="bg-white p-6 rounded-lg shadow-md text-center border-t-4 border-blue-500">
+                <div class="text-5xl text-blue-500 mb-4">📚</div> {# Icon/Emoji #}
+                <h3 class="text-xl font-semibold text-gray-800 mb-2">Comprehensive Course Management</h3>
+                <p class="text-gray-600">Access your enrolled courses, view unit details, and stay on top of your academic journey.</p>
+            </div>
+            <div class="bg-white p-6 rounded-lg shadow-md text-center border-t-4 border-green-500">
+                <div class="text-5xl text-green-500 mb-4">📊</div> {# Icon/Emoji #}
+                <h3 class="text-xl font-semibold text-gray-800 mb-2">Track Your Progress & Grades</h3>
+                <p class="text-gray-600">Monitor your assessment submissions, check grades, and view your full academic transcript.</p>
+            </div>
+            <div class="bg-white p-6 rounded-lg shadow-md text-center border-t-4 border-purple-500">
+                <div class="text-5xl text-purple-500 mb-4">💬</div> {# Icon/Emoji #}
+                <h3 class="text-xl font-semibold text-gray-800 mb-2">Direct Teacher Communication</h3>
+                <p class="text-gray-600">Easily submit feedback and get replies directly from your teachers for timely support.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="py-12 bg-gray-50 rounded-xl shadow-md">
+    <div class="container mx-auto px-4 text-center">
+        <h2 class="text-4xl font-bold text-gray-800 mb-8">Ready to Get Started?</h2>
+        <p class="text-lg text-gray-700 mb-8 max-w-2xl mx-auto">
+            Log in to your personalized dashboard to manage your academic life, or explore our public course catalog to see what's on offer.
+        </p>
+        <div class="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-6">
+            <a href="{{ url_for('login') }}" class="btn-primary py-3 px-8 text-lg">
+                Secure Login
+            </a>
+            <a href="{{ url_for('courses_catalog') }}" class="btn-secondary py-3 px-8 text-lg">
+                View All Courses
+            </a>
+        </div>
+    </div>
+</section>
+
+<style>
+    @keyframes fadeInDown {
+        from { opacity: 0; transform: translateY(-20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeInUp {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    .animate-fade-in-down {
+        animation: fadeInDown 0.8s ease-out forwards;
+    }
+    .animate-fade-in-up {
+        animation: fadeInUp 0.8s ease-out forwards;
+        animation-delay: 0.2s; /* Stagger the animation */
+    }
+    .animate-fade-in-up:nth-child(2) {
+        animation-delay: 0.4s;
+    }
+</style>
+{% endblock %}

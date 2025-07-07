@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+
+{% block title %}Edit Unit: {{ unit_info.unit_title }}{% endblock %}
+
+{% block content %}
+<div class="container mx-auto p-6 bg-white rounded-xl shadow-lg max-w-2xl">
+    <h1 class="text-4xl font-bold text-gray-800 mb-8 text-center">
+        Edit Unit: {{ unit_info.unit_title }} ({{ unit_info.unit_code }})
+    </h1>
+
+    <div class="mb-6">
+        <a href="{{ url_for('admin_course_units', course_id=course_info.id) }}"
+           class="inline-block font-semibold text-sm text-blue-600 hover:text-blue-800 transition duration-200">
+            ← Back to Course Units
+        </a>
+    </div>
+
+    <form action="{{ url_for('admin_edit_course_unit', course_id=course_info.id, unit_id=unit_info.id) }}" method="POST" class="space-y-6">
+        <div>
+            <label for="unit_code" class="block text-gray-700 text-sm font-semibold mb-2">Unit Code:</label>
+            <input type="text" id="unit_code" name="unit_code" class="form-input" value="{{ unit_info.unit_code }}" required autocomplete="off" />
+        </div>
+        <div>
+            <label for="unit_title" class="block text-gray-700 text-sm font-semibold mb-2">Unit Title:</label>
+            <input type="text" id="unit_title" name="unit_title" class="form-input" value="{{ unit_info.unit_title }}" required autocomplete="off" />
+        </div>
+        <div>
+            <label for="credit_points" class="block text-gray-700 text-sm font-semibold mb-2">Credit Points:</label>
+            <input type="number" id="credit_points" name="credit_points" class="form-input" value="{{ unit_info.credit_points }}" min="1" required />
+        </div>
+        <div>
+            <label for="semester" class="block text-gray-700 text-sm font-semibold mb-2">Semester:</label>
+            <select id="semester" name="semester" class="form-input" required>
+                <option value="" disabled {% if not unit_info.semester %}selected{% endif %}>Select Semester</option>
+                {% for sem in ['SEMESTER I', 'SEMESTER II', 'SEMESTER III', 'SEMESTER IV', 'SUMMER', 'WINTER'] %}
+                    <option value="{{ sem }}" {% if unit_info.semester == sem %}selected{% endif %}>{{ sem }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div>
+            <label for="teacher_id" class="block text-gray-700 text-sm font-semibold mb-2">Assigned Teacher (Optional):</label>
+            <select id="teacher_id" name="teacher_id" class="form-input">
+                <option value="" {% if not unit_info.teacher_id %}selected{% endif %}>No Teacher Assigned</option>
+                {% for teacher in teachers %}
+                    <option value="{{ teacher.id }}" {% if unit_info.teacher_id == teacher.id %}selected{% endif %}>
+                        {{ teacher.first_name }} {{ teacher.last_name }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+        <div>
+            <label for="prerequisites" class="block text-gray-700 text-sm font-semibold mb-2">Prerequisites (Optional):</label>
+            <textarea id="prerequisites" name="prerequisites" rows="3" class="form-input" placeholder="e.g., Must have completed ICT101.">{{ unit_info.prerequisites or '' }}</textarea>
+        </div>
+
+        <div class="flex justify-end">
+            <button type="submit" class="btn-primary py-3 px-6 text-lg rounded-md hover:bg-blue-700 transition duration-150">
+                Update Unit
+            </button>
+        </div>
+    </form>
+</div>
+{% endblock %}

@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Dashboard{% endblock %}
+
+{% block content %}
+<style>
+    .fade-in {
+        animation: fadeInScale 0.6s ease-out;
+    }
+    @keyframes fadeInScale {
+        from {
+            opacity: 0;
+            transform: scale(0.95);
+        }
+        to {
+            opacity: 1;
+            transform: scale(1);
+        }
+    }
+</style>
+
+<div class="container mx-auto p-6 md:p-10 bg-gradient-to-br from-gray-50 to-white rounded-3xl shadow-2xl fade-in">
+    <h1 class="text-5xl font-extrabold text-center text-gray-900 mb-12 tracking-tight">Admin Dashboard</h1>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+        {# User Management #}
+        <div class="bg-gradient-to-br from-blue-100 to-blue-200 border-l-4 border-blue-600 text-blue-900 rounded-xl p-6 shadow-md hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300">
+            <h2 class="text-2xl font-bold mb-3">User Management</h2>
+            <p class="text-base mb-6">Effortlessly manage student and teacher accounts.</p>
+            <a href="{{ url_for('admin_users') }}"
+               class="inline-flex items-center justify-center px-5 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition duration-200">
+                Manage Users &nbsp; ➡️
+            </a>
+        </div>
+
+        {# Program Management #}
+        <div class="bg-gradient-to-br from-green-100 to-green-200 border-l-4 border-green-600 text-green-900 rounded-xl p-6 shadow-md hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300">
+            <h2 class="text-2xl font-bold mb-3">Program Management</h2>
+            <p class="text-base mb-6">Oversee all academic programs and departments.</p>
+            <a href="{{ url_for('admin_programs') }}"
+               class="inline-flex items-center justify-center px-5 py-3 bg-green-600 hover:bg-green-700 text-white font-medium rounded-lg transition duration-200">
+                Manage Programs &nbsp; ➡️
+            </a>
+        </div>
+
+        {# Course Management #}
+        <div class="bg-gradient-to-br from-purple-100 to-purple-200 border-l-4 border-purple-600 text-purple-900 rounded-xl p-6 shadow-md hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300">
+            <h2 class="text-2xl font-bold mb-3">Course Management</h2>
+            <p class="text-base mb-6">Administer course offerings and student enrollments.</p>
+            <a href="{{ url_for('admin_courses') }}"
+               class="inline-flex items-center justify-center px-5 py-3 bg-purple-600 hover:bg-purple-700 text-white font-medium rounded-lg transition duration-200">
+                Manage Courses &nbsp; ➡️
+            </a>
+        </div>
+
+        {# Program Categories #}
+        <div class="bg-gradient-to-br from-yellow-100 to-yellow-200 border-l-4 border-yellow-600 text-yellow-900 rounded-xl p-6 shadow-md hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300">
+            <h2 class="text-2xl font-bold mb-3">Program Categories</h2>
+            <p class="text-base mb-6">Organize academic programs for easier navigation.</p>
+            <a href="{{ url_for('admin_program_categories') }}"
+               class="inline-flex items-center justify-center px-5 py-3 bg-yellow-500 hover:bg-yellow-600 text-white font-medium rounded-lg transition duration-200">
+                Manage Categories &nbsp; ➡️
+            </a>
+        </div>
+
+        {# Announcements - Coming Soon #}
+        <div class="bg-gradient-to-br from-indigo-100 to-indigo-200 border-l-4 border-indigo-500 text-indigo-900 rounded-xl p-6 shadow-md opacity-70">
+            <h2 class="text-2xl font-bold mb-3">Announcements</h2>
+            <p class="text-base mb-6">Broadcast system-wide messages and updates.</p>
+            <button class="inline-flex items-center justify-center px-5 py-3 bg-indigo-300 text-white font-medium rounded-lg cursor-not-allowed">
+                Coming Soon 🚧
+            </button>
+        </div>
+
+        {# System Reports - Coming Soon #}
+        <div class="bg-gradient-to-br from-red-100 to-red-200 border-l-4 border-red-500 text-red-900 rounded-xl p-6 shadow-md opacity-70">
+            <h2 class="text-2xl font-bold mb-3">System Reports</h2>
+            <p class="text-base mb-6">Generate detailed insights and usage statistics.</p>
+            <button class="inline-flex items-center justify-center px-5 py-3 bg-red-300 text-white font-medium rounded-lg cursor-not-allowed">
+                Coming Soon 📊
+            </button>
+        </div>
+    </div>
+</div>
+{% endblock %}

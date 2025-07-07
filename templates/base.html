@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Student Support System{% endblock %}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        html, body {
+            max-width: 100%;
+            overflow-x: hidden;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            background-color: #f8fafc;
+        }
+
+        /* Flash Messages */
+        .flash-message {
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-radius: 0.5rem;
+            font-weight: 500;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .flash-message button {
+            background: none;
+            border: none;
+            font-size: 1.25rem;
+            cursor: pointer;
+            color: inherit;
+            padding: 0 0.5rem;
+            line-height: 1;
+            transition: color 0.2s;
+        }
+
+        .flash-message button:hover {
+            color: #4b5563;
+        }
+
+        .flash-success {
+            background-color: #d1fae5;
+            color: #065f46;
+            border: 1px solid #34d399;
+        }
+
+        .flash-danger {
+            background-color: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #ef4444;
+        }
+
+        .flash-info {
+            background-color: #e0f2fe;
+            color: #0369a1;
+            border: 1px solid #38b2ac;
+        }
+
+        .flash-warning {
+            background-color: #fffbeb;
+            color: #92400e;
+            border: 1px solid #f59e0b;
+        }
+
+        /* Buttons */
+        .btn {
+            @apply font-semibold py-2 px-4 rounded-lg transition-all duration-200 shadow;
+        }
+
+        .btn-primary {
+            @apply bg-blue-600 hover:bg-blue-700 text-white hover:shadow-lg;
+        }
+
+        .btn-secondary {
+            @apply bg-gray-200 hover:bg-gray-300 text-gray-800 hover:shadow;
+        }
+
+        .btn-danger {
+            @apply bg-red-600 hover:bg-red-700 text-white hover:shadow-lg;
+        }
+
+        .btn-success {
+            @apply bg-green-600 hover:bg-green-700 text-white hover:shadow-lg;
+        }
+
+        /* Tables */
+        table {
+            @apply w-full text-left border-collapse;
+        }
+
+        th {
+            @apply p-4 bg-gray-100 text-gray-700 font-bold uppercase text-sm;
+        }
+
+        td {
+            @apply p-4 border-b border-gray-200 text-gray-700;
+        }
+
+        tr:hover {
+            @apply bg-gray-50;
+        }
+
+        /* Forms */
+        .form-input {
+            @apply w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-150;
+        }
+
+        /* Cards */
+        .card {
+            @apply bg-white p-6 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-300;
+        }
+
+        /* Navigation */
+        .nav-gradient {
+            background: linear-gradient(135deg, #1f2937 0%, #111827 100%);
+        }
+
+        /* Utility */
+        .min-h-screen {
+            min-height: calc(100vh - 200px); /* Adjust for header/footer */
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Header -->
+    <header class="nav-gradient p-4 shadow-lg sticky top-0 z-50">
+        <div class="container mx-auto flex flex-wrap justify-between items-center">
+            <a href="{{ url_for('index') }}" class="text-white text-2xl md:text-3xl font-bold tracking-tight">
+                Student Support System
+            </a>
+
+            <nav class="flex items-center space-x-2 md:space-x-4">
+                {% if current_user.is_authenticated %}
+                <!-- User Dropdown -->
+                <div class="relative group">
+                    <button class="flex items-center space-x-2 text-gray-200 hover:text-white px-3 py-2 rounded-md text-base md:text-lg font-medium transition">
+                        <div class="w-8 h-8 md:w-10 md:h-10 rounded-full bg-blue-600 flex items-center justify-center text-white font-bold uppercase">
+                            {% if current_user.first_name and current_user.last_name %}
+                                {{ current_user.first_name[0] }}{{ current_user.last_name[0] }}
+                            {% else %}
+                                {{ current_user.username[0] }}
+                            {% endif %}
+                        </div>
+                        <span class="hidden md:block">
+                            {% if current_user.first_name and current_user.last_name %}
+                                {{ current_user.first_name }} {{ current_user.last_name }}
+                            {% else %}
+                                {{ current_user.username }}
+                            {% endif %}
+                        </span>
+                        <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                        </svg>
+                    </button>
+
+                    <!-- Dropdown Menu -->
+                    <div class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
+                        <a href="{{ url_for('dashboard') }}" class="block px-4 py-2 text-gray-800 hover:bg-gray-100">Dashboard</a>
+                        <div class="border-t border-gray-100 my-1"></div>
+
+                        {% if current_user.role == 'admin' %}
+                            <a href="{{ url_for('admin_users') }}" class="block px-4 py-2 text-gray-800 hover:bg-gray-100">Users</a>
+                            <a href="{{ url_for('admin_programs') }}" class="block px-4 py-2 text-gray-800 hover:bg-gray-100">Programs</a>
+                            <a href="{{ url_for('admin_courses') }}" class="block px-4 py-2 text-gray-800 hover:bg-gray-100">Courses</a>
+                            <a href="{{ url_for('admin_program_categories') }}" class="block px-4 py-2 text-gray-800 hover:bg-gray-100">Categories</a>
+                        {% elif current_user.role == 'teacher' %}
+                            <a href="{{ url_for('teacher_assessments') }}" class="block px-4 py-2 text-gray-800 hover:bg-gray-100">Assessments</a>
+                            <a href="{{ url_for('teacher_grade_submissions') }}" class="block px-4 py-2 text-gray-800 hover:bg-gray-100">Grade Submissions</a>
+                            <a href="{{ url_for('teacher_feedback_list') }}" class="block px-4 py-2 text-gray-800 hover:bg-gray-100">Feedback</a>
+                            <a href="{{ url_for('teacher_dashboard') }}" class="block px-4 py-2 text-gray-800 hover:bg-gray-100">Teacher Home</a>
+                        {% elif current_user.role == 'student' %}
+                            <a href="{{ url_for('student_courses') }}" class="block px-4 py-2 text-gray-800 hover:bg-gray-100">My Courses</a>
+                            <a href="{{ url_for('student_view_all_assessments') }}" class="block px-4 py-2 text-gray-800 hover:bg-gray-100">My Assessments</a>
+                            <a href="{{ url_for('student_grades_transcript') }}" class="block px-4 py-2 text-gray-800 hover:bg-gray-100">My Grades</a>
+                            <a href="{{ url_for('student_add_feedback') }}" class="block px-4 py-2 text-gray-800 hover:bg-gray-100">Submit Feedback</a>
+                            <a href="{{ url_for('student_dashboard') }}" class="block px-4 py-2 text-gray-800 hover:bg-gray-100">Student Home</a>
+                        {% endif %}
+
+                        <div class="border-t border-gray-100 my-1"></div>
+                        <a href="{{ url_for('logout') }}" class="block px-4 py-2 text-red-600 hover:bg-red-50">Logout</a>
+                    </div>
+                </div>
+                {% else %}
+                    <a href="{{ url_for('login') }}" class="btn btn-secondary">Login</a>
+                    <a href="{{ url_for('courses_catalog') }}" class="btn btn-secondary">Course Catalog</a>
+                {% endif %}
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex-grow container mx-auto p-4 md:p-6 lg:p-8">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="mb-6 space-y-3">
+                    {% for category, message in messages %}
+                        <div class="flash-message flash-{{ category }}" role="alert">
+                            <span>{{ message }}</span>
+                            <button type="button" class="ml-auto" aria-label="Close" onclick="this.parentElement.remove()">
+                                &times;
+                            </button>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-6 mt-auto">
+        <div class="container mx-auto px-4 text-center">
+            <p class="text-lg mb-1">&copy; {{ current_year }} Student Support System</p>
+            <p class="text-sm text-gray-400">Designed for educational purposes</p>
+        </div>
+    </footer>
+</body>
+</html>

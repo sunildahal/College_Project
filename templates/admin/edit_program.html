@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+
+{% block title %}Edit Program: {{ program.name }}{% endblock %}
+
+{% block content %}
+<div class="container mx-auto p-8 bg-white rounded-xl shadow-md max-w-2xl">
+    <h1 class="text-4xl font-extrabold text-gray-900 mb-8 text-center">
+        Edit Program: {{ program.name }}
+    </h1>
+
+    <div class="mb-6">
+        <a href="{{ url_for('admin_programs') }}"
+           class="inline-block text-blue-600 font-semibold text-sm hover:text-blue-800 transition duration-200">
+            ← Back to Programs
+        </a>
+    </div>
+
+    <form action="{{ url_for('admin_edit_program', program_id=program.id) }}" method="POST" class="space-y-6" novalidate>
+        <div>
+            <label for="name" class="block mb-2 text-gray-700 font-semibold text-sm">Program Name<span class="text-red-600">*</span>:</label>
+            <input
+                type="text"
+                id="name"
+                name="name"
+                value="{{ program.name }}"
+                required
+                autocomplete="off"
+                class="form-input w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                aria-describedby="nameHelp"
+                aria-required="true"
+            />
+            <p id="nameHelp" class="mt-1 text-xs text-gray-500">Enter the official program name.</p>
+        </div>
+
+        <div>
+            <label for="description" class="block mb-2 text-gray-700 font-semibold text-sm">Description (Optional):</label>
+            <textarea
+                id="description"
+                name="description"
+                rows="4"
+                placeholder="e.g., A comprehensive program covering modern software development methodologies."
+                class="form-input w-full border border-gray-300 rounded-md px-4 py-2 resize-vertical focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            >{{ program.description or '' }}</textarea>
+        </div>
+
+        <div>
+            <label for="category_id" class="block mb-2 text-gray-700 font-semibold text-sm">Category (Optional):</label>
+            <select
+                id="category_id"
+                name="category_id"
+                class="form-select w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            >
+                <option value="" {% if not program.category_id %}selected{% endif %}>No Category</option>
+                {% for category in program_categories %}
+                    <option value="{{ category.id }}" {% if program.category_id == category.id %}selected{% endif %}>{{ category.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="flex justify-end">
+            <button
+                type="submit"
+                class="btn-primary bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-md shadow-md transition duration-150 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+            >
+                Update Program
+            </button>
+        </div>
+    </form>
+</div>
+{% endblock %}

@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+
+{% block title %}Add Unit to {{ course_info.name }}{% endblock %}
+
+{% block content %}
+<div class="container mx-auto p-6 bg-white rounded-xl shadow-lg max-w-2xl">
+    <h1 class="text-4xl font-bold text-gray-800 mb-8 text-center">
+        Add Unit to: {{ course_info.name }} ({{ course_info.code }})
+    </h1>
+
+    <div class="mb-6 text-center">
+        <a href="{{ url_for('admin_course_units', course_id=course_info.id) }}"
+           class="inline-block font-semibold text-sm text-blue-600 hover:text-blue-800 transition duration-150 ease-in-out">
+            ← Back to Course Units
+        </a>
+    </div>
+
+    <form action="{{ url_for('admin_add_course_unit', course_id=course_info.id) }}" method="POST" class="space-y-6">
+        <div>
+            <label for="unit_code" class="block text-gray-700 text-sm font-semibold mb-2">Unit Code<span class="text-red-500">*</span>:</label>
+            <input type="text" id="unit_code" name="unit_code" class="form-input w-full rounded-md border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200" required placeholder="e.g., ICT201">
+        </div>
+        <div>
+            <label for="unit_title" class="block text-gray-700 text-sm font-semibold mb-2">Unit Title<span class="text-red-500">*</span>:</label>
+            <input type="text" id="unit_title" name="unit_title" class="form-input w-full rounded-md border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200" required placeholder="e.g., Advanced Programming">
+        </div>
+        <div>
+            <label for="credit_points" class="block text-gray-700 text-sm font-semibold mb-2">Credit Points<span class="text-red-500">*</span>:</label>
+            <input type="number" id="credit_points" name="credit_points" class="form-input w-full rounded-md border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200" min="1" required placeholder="e.g., 6">
+        </div>
+        <div>
+            <label for="semester" class="block text-gray-700 text-sm font-semibold mb-2">Semester<span class="text-red-500">*</span>:</label>
+            <select id="semester" name="semester" class="form-input w-full rounded-md border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200" required>
+                <option value="" disabled selected>Select Semester</option>
+                <option value="SEMESTER I">SEMESTER I</option>
+                <option value="SEMESTER II">SEMESTER II</option>
+                <option value="SEMESTER III">SEMESTER III</option>
+                <option value="SEMESTER IV">SEMESTER IV</option>
+                <option value="SUMMER">SUMMER</option>
+                <option value="WINTER">WINTER</option>
+            </select>
+        </div>
+        <div>
+            <label for="teacher_id" class="block text-gray-700 text-sm font-semibold mb-2">Assigned Teacher (Optional):</label>
+            <select id="teacher_id" name="teacher_id" class="form-input w-full rounded-md border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200">
+                <option value="">No Teacher Assigned</option>
+                {% for teacher in teachers %}
+                    <option value="{{ teacher.id }}">{{ teacher.first_name }} {{ teacher.last_name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div>
+            <label for="prerequisites" class="block text-gray-700 text-sm font-semibold mb-2">Prerequisites (Optional):</label>
+            <textarea id="prerequisites" name="prerequisites" rows="3" class="form-input w-full rounded-md border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200" placeholder="e.g., Must have completed ICT101."></textarea>
+        </div>
+
+        <div class="text-center">
+            <button type="submit" class="btn-primary py-3 px-8 text-lg rounded-md">
+                Add Unit
+            </button>
+        </div>
+    </form>
+</div>
+{% endblock %}

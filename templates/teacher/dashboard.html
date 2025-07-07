@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+
+{% block title %}Teacher Dashboard{% endblock %}
+
+{% block content %}
+<div class="container mx-auto p-8 bg-white rounded-2xl shadow-xl border border-gray-100">
+    <h1 class="text-5xl font-extrabold text-gray-900 mb-10 text-center tracking-tight">Welcome, {{ current_user.first_name }}!</h1>
+
+    {# Key Metrics Cards #}
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+        {# Assigned Courses Card #}
+        <div class="card bg-gradient-to-br from-blue-50 to-blue-100 border-l-4 border-blue-500 text-blue-900 flex flex-col justify-between p-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
+            <div class="flex items-center mb-4">
+                <span role="img" aria-label="Books" class="text-4xl text-blue-600 mr-3">📚</span>
+                <h2 class="text-2xl font-semibold text-blue-800">My Courses</h2>
+            </div>
+            <p class="text-5xl font-extrabold text-blue-700 mb-4">{{ assigned_courses|length }}</p>
+            <p class="text-blue-800 text-lg mb-4">course{{ 's' if assigned_courses|length != 1 }} where you teach units.</p>
+            <a href="{{ url_for('teacher_assessments') }}" class="btn-primary text-base px-5 py-2.5 bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 rounded">
+                View All Assessments
+            </a>
+        </div>
+
+        {# Pending Submissions Card #}
+        <div class="card bg-gradient-to-br from-yellow-50 to-yellow-100 border-l-4 border-yellow-500 text-yellow-900 flex flex-col justify-between p-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
+            <div class="flex items-center mb-4">
+                <span role="img" aria-label="Mailbox" class="text-4xl text-yellow-600 mr-3">📬</span>
+                <h2 class="text-2xl font-semibold text-yellow-800">Pending Submissions</h2>
+            </div>
+            <p class="text-5xl font-extrabold text-yellow-700 mb-4">{{ pending_submissions_count }}</p>
+            <p class="text-yellow-800 text-lg mb-4">submission{{ 's' if pending_submissions_count != 1 }} awaiting your grade.</p>
+            <a href="{{ url_for('teacher_grade_submissions') }}" class="btn-primary text-base px-5 py-2.5 bg-yellow-600 hover:bg-yellow-700 focus:outline-none focus:ring-2 focus:ring-yellow-500 rounded">
+                Grade Submissions
+            </a>
+        </div>
+
+        {# Graded Assessments Card #}
+        <div class="card bg-gradient-to-br from-green-50 to-green-100 border-l-4 border-green-500 text-green-900 flex flex-col justify-between p-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
+            <div class="flex items-center mb-4">
+                <span role="img" aria-label="Check Mark" class="text-4xl text-green-600 mr-3">✅</span>
+                <h2 class="text-2xl font-semibold text-green-800">Graded Work</h2>
+            </div>
+            <p class="text-5xl font-extrabold text-green-700 mb-4">{{ graded_assessments_count }}</p>
+            <p class="text-green-800 text-lg mb-4">assessment{{ 's' if graded_assessments_count != 1 }} you've completed grading.</p>
+            <a href="{{ url_for('teacher_graded_submissions') }}" class="btn-primary text-base px-5 py-2.5 bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 rounded">
+                View Graded
+            </a>
+        </div>
+
+        {# New Feedback Card #}
+        <div class="card bg-gradient-to-br from-purple-50 to-purple-100 border-l-4 border-purple-500 text-purple-900 flex flex-col justify-between p-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
+            <div class="flex items-center mb-4">
+                <span role="img" aria-label="Speech Bubble" class="text-4xl text-purple-600 mr-3">💬</span>
+                <h2 class="text-2xl font-semibold text-purple-800">New Feedback</h2>
+            </div>
+            <p class="text-5xl font-extrabold text-purple-700 mb-4">{{ new_feedback_count }}</p>
+            <p class="text-purple-800 text-lg mb-4">new feedback item{{ 's' if new_feedback_count != 1 }} from students.</p>
+            <a href="{{ url_for('teacher_feedback_list') }}" class="btn-primary text-base px-5 py-2.5 bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 rounded">
+                View Feedback
+            </a>
+        </div>
+    </div>
+
+    {# Courses You Teach Units In Section #}
+    <h2 class="text-3xl font-bold text-gray-800 mb-6 border-b-2 border-gray-200 pb-3">Courses You Teach Units In</h2>
+    {% if assigned_courses %}
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {% for course in assigned_courses %}
+        <div class="card bg-gray-50 border border-gray-200 text-gray-800 p-6 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-300">
+            <h3 class="text-xl font-semibold mb-2">{{ course.name }} ({{ course.code }})</h3>
+            <p class="text-gray-600 mb-4">Program: {{ course.program_name or 'N/A' }}</p>
+            <a href="{{ url_for('teacher_course_roster', course_id=course.id) }}" class="btn-secondary text-base px-4 py-2 rounded bg-gray-700 text-white hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-500">
+                View Roster & My Units
+            </a>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <p class="text-gray-600 text-center py-8 text-lg card bg-gray-50 border border-gray-200 rounded">You are not currently assigned to teach any units in any courses. 😔</p>
+    {% endif %}
+
+    {# Total Students Card #}
+    <div class="card bg-gradient-to-br from-indigo-50 to-indigo-100 border-l-4 border-indigo-500 text-indigo-900 mt-12 p-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
+        <div class="flex items-center mb-4">
+            <span role="img" aria-label="Students" class="text-4xl text-indigo-600 mr-3">👥</span>
+            <h2 class="text-2xl font-semibold text-indigo-800">Total Students Across Your Courses</h2>
+        </div>
+        <p class="text-5xl font-extrabold text-indigo-700">{{ total_students_in_courses }}</p>
+        <p class="text-indigo-800 text-lg">total student{{ 's' if total_students_in_courses != 1 }} are enrolled in courses with your units.</p>
+    </div>
+</div>
+{% endblock %}

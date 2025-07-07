@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block title %}Submit Feedback{% endblock %}
+
+{% block content %}
+<div class="container mx-auto p-6 bg-white rounded-lg shadow-md">
+    <h1 class="text-3xl font-bold text-gray-800 mb-6">Submit Feedback</h1>
+
+    <form method="POST" action="{{ url_for('student_add_feedback') }}" class="space-y-4">
+        <div class="mb-4">
+            <label for="feedback_text" class="block text-gray-700 text-sm font-bold mb-2">Your Feedback:</label>
+            <textarea id="feedback_text" name="feedback_text" rows="6" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" placeholder="Enter your feedback here..." required></textarea>
+        </div>
+
+        <div class="mb-4">
+            <label for="teacher_id" class="block text-gray-700 text-sm font-bold mb-2">Select Teacher (Optional):</label>
+            <select id="teacher_id" name="teacher_id" class="shadow border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                <option value="">General Feedback (No Specific Teacher)</option>
+                {% for teacher in teachers %}
+                    <option value="{{ teacher.id }}">{{ teacher.first_name }} {{ teacher.last_name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="mb-4">
+            <label for="course_id" class="block text-gray-700 text-sm font-bold mb-2">Select Course (Optional):</label>
+            <select id="course_id" name="course_id" class="shadow border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                <option value="">General Feedback (No Specific Course)</option>
+                {% for course in courses %}
+                    <option value="{{ course.id }}">{{ course.name }} ({{ course.code }})</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="flex items-center justify-between">
+            <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                Submit Feedback
+            </button>
+            <a href="{{ url_for('student_dashboard') }}" class="inline-block align-baseline font-bold text-sm text-blue-500 hover:text-blue-800">
+                Cancel
+            </a>
+        </div>
+    </form>
+</div>
+{% endblock %}

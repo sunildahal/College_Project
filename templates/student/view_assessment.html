@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+
+{% block title %}{{ assessment.title }} Details{% endblock %}
+
+{% block content %}
+<div class="container mx-auto p-6 bg-white rounded-lg shadow-md">
+    <h1 class="text-3xl font-bold text-gray-800 mb-6">Assessment: {{ assessment.title }}</h1>
+
+    <div class="mb-6">
+        <a href="{{ url_for('student_view_all_assessments') }}" class="inline-block align-baseline font-bold text-sm text-blue-500 hover:text-blue-800">
+            Back to All Assessments
+        </a>
+    </div>
+
+    <div class="bg-blue-50 p-6 rounded-lg shadow-sm mb-8">
+        <h2 class="text-2xl font-semibold text-blue-800 mb-4">Assessment Information</h2>
+        <p class="text-gray-700 mb-2"><span class="font-semibold">Course:</span> {{ assessment.course_name }} ({{ assessment.course_code }})</p>
+        <p class="text-gray-700 mb-2"><span class="font-semibold">Unit:</span> {{ assessment.unit_code }} - {{ assessment.unit_title }}</p>
+        <p class="text-gray-700 mb-2"><span class="font-semibold">Unit Teacher:</span>
+            {% if assessment.unit_teacher_first_name and assessment.unit_teacher_last_name %}
+                {{ assessment.unit_teacher_first_name }} {{ assessment.unit_teacher_last_name }}
+            {% else %}
+                N/A
+            {% endif %}
+        </p>
+        <p class="text-gray-700 mb-2"><span class="font-semibold">Due Date:</span> {{ assessment.due_date.strftime('%Y-%m-%d') }}</p>
+        <p class="text-gray-700 mb-4"><span class="font-semibold">Max Points:</span> {{ assessment.max_points }}</p>
+        <p class="text-gray-700"><span class="font-semibold">Description:</span> {{ assessment.description if assessment.description else 'No description provided.' }}</p>
+    </div>
+
+    <h2 class="text-2xl font-bold text-gray-800 mb-4">Your Submission</h2>
+    {% if student_grade_info %}
+        <div class="bg-green-50 p-6 rounded-lg shadow-sm mb-8">
+            <p class="text-gray-700 mb-2"><span class="font-semibold">Status:</span> <span class="font-bold {% if student_grade_info.status == 'Graded' %}text-green-600{% elif student_grade_info.status == 'Submitted' %}text-yellow-600{% else %}text-gray-600{% endif %}">{{ student_grade_info.status }}</span></p>
+            <p class="text-gray-700 mb-2"><span class="font-semibold">Submission Date:</span> {{ student_grade_info.submission_date.strftime('%Y-%m-%d %H:%M') }}</p>
+            {% if student_grade_info.submission_file_path %}
+                <p class="text-gray-700 mb-2">
+                    <span class="font-semibold">Submitted File:</span>
+                    <a href="{{ url_for('teacher_download_submission', grade_id=student_grade_info.grade_id) }}" class="text-blue-600 hover:text-blue-800 font-medium ml-2" download>Download Your Submission</a>
+                </p>
+            {% else %}
+                <p class="text-gray-700 mb-2"><span class="font-semibold">Submitted File:</span> No file uploaded.</p>
+            {% endif %}
+
+            {% if student_grade_info.status == 'Graded' %}
+                <p class="text-gray-700 mb-2 mt-4"><span class="font-semibold">Grade:</span> <span class="font-bold text-green-700">{{ student_grade_info.grade }} / {{ assessment.max_points }}</span></p>
+                {% if assessment.max_points > 0 %}
+                    <p class="text-gray-700 mb-2"><span class="font-semibold">Percentage:</span> {{ "%.2f" | format((student_grade_info.grade / assessment.max_points) * 100) }}%</p>
+                {% endif %}
+                <p class="text-gray-700 mb-2"><span class="font-semibold">Graded Date:</span> {{ student_grade_info.graded_date.strftime('%Y-%m-%d %H:%M') }}</p>
+                <p class="text-gray-700"><span class="font-semibold">Feedback:</span> {{ student_grade_info.feedback if student_grade_info.feedback else 'No feedback provided.' }}</p>
+            {% endif %}
+
+        </div>
+    {% else %}
+        <p class="text-gray-600 mb-4">You have not submitted this assessment yet.</p>
+    {% endif %}
+
+    {% if student_grade_info and student_grade_info.status == 'Graded' %}
+        <p class="text-gray-600 text-center py-4">This assessment has been graded and cannot be resubmitted.</p>
+    {% else %}
+        <h2 class="text-2xl font-bold text-gray-800 mb-4">Submit Your Work</h2>
+        <form action="{{ url_for('student_submit_assessment', assessment_id=assessment.id) }}" method="POST" enctype="multipart/form-data" class="space-y-4">
+            <div class="mb-4">
+                <label for="submission_file" class="block text-gray-700 text-sm font-bold mb-2">Upload File (Doc, Docx, PDF):</label>
+                <input type="file" id="submission_file" name="submission_file" accept=".doc,.docx,.pdf" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required>
+                <p class="text-xs text-gray-500 mt-1">Accepted file types: .doc, .docx, .pdf</p>
+            </div>
+            <div class="flex items-center justify-between">
+                <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                    {{ 'Resubmit Assessment' if student_grade_info else 'Submit Assessment' }}
+                </button>
+            </div>
+        </form>
+    {% endif %}
+</div>
+{% endblock %}
